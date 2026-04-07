@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Monte en Vuelo · Arte que enraíza, naturaleza que inspira</title>
+  <meta name="description" content="Monte en Vuelo es un proyecto educativo de teatro y naturaleza en Córdoba, Argentina. Talleres para infancias, adolescentes, jóvenes, adultos y observación de aves. Facilita Prof. Vanesa Steiner."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-crema:#F5EFE0;--c-crema2:#EDE3CE;--c-crema3:#FAF6ED;
+  --c-marron:#231409;--c-marron2:#4A2C12;--c-marron3:#7A4A22;
+  --c-oliva:#5E7048;--c-oliva2:#7A8E5C;--c-oliva3:#A4B580;
+  --c-mostaza:#C4991E;--c-mostaza2:#E0B530;--c-mostaza3:#F0D070;
+  --c-tierra:#9C5A30;--c-cielo:#8BA8B8;
+  --radius:22px;--sh-sm:0 2px 12px rgba(35,20,9,.09);--sh-md:0 12px 40px rgba(35,20,9,.12);--sh-lg:0 20px 60px rgba(35,20,9,.18);
+  --tr:.4s cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;font-size:16px;}
+body{font-family:'DM Sans',sans-serif;background:var(--c-crema);color:var(--c-marron);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif;line-height:1.1;}
+a{color:inherit;text-decoration:none;}
+img{max-width:100%;display:block;}
+
+svg { 
+  width: 1.25em; 
+  height: 1.25em; 
+  vertical-align: middle; 
+  flex-shrink: 0; 
+  transition: color var(--tr);
+}
+
+#particles-canvas{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.4;}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:18px 32px;display:flex;align-items:center;justify-content:space-between;transition:background var(--tr),padding var(--tr),box-shadow var(--tr);}
+.nav.scrolled{background:rgba(245,239,224,.96);backdrop-filter:blur(16px);padding:12px 32px;box-shadow:0 1px 24px rgba(35,20,9,.1);}
+.nav-logo{display:flex;align-items:center;gap:12px;font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--c-marron);}
+.nav-logo-img{height:46px;width:auto;object-fit:contain;transition:transform var(--tr);}
+.nav-logo:hover .nav-logo-img{transform:scale(1.08) rotate(-4deg);}
+.nav-links{display:flex;align-items:center;gap:28px;}
+.nav-links a{font-size:.78rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--c-marron2);position:relative;transition:color var(--tr);}
+.nav-links a::after{content:'';position:absolute;left:0;bottom:-3px;width:0;height:1.5px;background:var(--c-oliva);transition:width var(--tr);}
+.nav-links a:hover{color:var(--c-oliva);}
+.nav-links a:hover::after{width:100%;}
+.nav-btn{background:var(--c-oliva)!important;color:#fff!important;padding:9px 22px;border-radius:50px;font-weight:600!important;box-shadow:0 4px 16px rgba(94,112,72,.3);transition:background var(--tr),transform var(--tr),box-shadow var(--tr)!important;}
+.nav-btn::after{display:none!important;}
+.nav-btn:hover{background:var(--c-marron2)!important;transform:translateY(-2px)!important;}
+@media(max-width:850px){.nav-links{display:none;}}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:140px 24px 100px;overflow:hidden;z-index:1;}
+.hero-blob{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;animation:blobFloat 8s ease-in-out infinite;}
+.blob-1{width:500px;height:500px;background:radial-gradient(circle,rgba(196,153,30,.18),transparent 70%);top:-100px;right:-100px;}
+.blob-2{width:400px;height:400px;background:radial-gradient(circle,rgba(94,112,72,.15),transparent 70%);bottom:-80px;left:-80px;animation-delay:-4s;}
+.blob-3{width:300px;height:300px;background:radial-gradient(circle,rgba(156,90,48,.12),transparent 70%);top:40%;left:10%;animation-delay:-2s;}
+.hero-arc{position:absolute;border-radius:50%;border:1px solid;pointer-events:none;}
+.arc-1{width:600px;height:600px;border-color:rgba(196,153,30,.18);top:-150px;right:-150px;animation:arcRotate 20s linear infinite;}
+.arc-2{width:420px;height:420px;border-color:rgba(94,112,72,.15);bottom:-100px;left:-100px;animation:arcRotate 30s linear infinite reverse;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:10px;background:rgba(94,112,72,.12);border:1px solid rgba(94,112,72,.25);color:var(--c-oliva);font-size:.75rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding:7px 18px;border-radius:50px;margin-bottom:28px;animation:fadeUp .7s .1s ease both;}
+.hero-title{font-size:clamp(4rem,11vw,9rem);font-weight:300;color:var(--c-marron);line-height:.95;letter-spacing:-.02em;animation:fadeUp .8s .2s ease both;}
+.hero-title em{font-style:italic;color:var(--c-oliva);display:block;}
+.hero-title .vw{display:inline-block;position:relative;}
+.hero-title .vw::after{content:'';position:absolute;left:0;bottom:8px;width:100%;height:3px;background:var(--c-mostaza);transform:scaleX(0);transform-origin:left;animation:lineReveal 1s .9s ease both;}
+.hero-claim{font-size:clamp(.8rem,2vw,.95rem);letter-spacing:.2em;text-transform:uppercase;color:var(--c-marron3);font-weight:300;margin-top:16px;animation:fadeUp .8s .35s ease both;}
+.hero-lema{font-family:'Cormorant Garamond',serif;font-size:clamp(1.2rem,3vw,1.9rem);font-style:italic;color:var(--c-oliva);margin:26px 0 44px;font-weight:400;animation:fadeUp .8s .45s ease both;}
+.hero-lema span{display:inline-block;width:36px;height:1px;background:var(--c-mostaza);vertical-align:middle;margin:0 12px;opacity:.7;}
+.hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;animation:fadeUp .8s .55s ease both;}
+.btn-pri{display:inline-flex;align-items:center;gap:10px;background:var(--c-oliva);color:#fff;font-weight:600;font-size:.95rem;padding:16px 34px;border-radius:50px;box-shadow:0 8px 30px rgba(94,112,72,.35);transition:all var(--tr);position:relative;overflow:hidden;}
+.btn-pri::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);opacity:0;transition:opacity var(--tr);}
+.btn-pri:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(94,112,72,.4);background:var(--c-marron2);}
+.btn-pri:hover::before{opacity:1;}
+.btn-sec{display:inline-flex;align-items:center;gap:10px;background:transparent;color:var(--c-marron2);font-weight:500;font-size:.95rem;padding:15px 28px;border-radius:50px;border:1.5px solid rgba(74,44,18,.25);transition:all var(--tr);}
+.btn-sec:hover{border-color:var(--c-oliva);color:var(--c-oliva);transform:translateY(-2px);background:rgba(94,112,72,.06);}
+.hero-scroll{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;animation:fadeUp .8s .9s ease both;}
+.hero-scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,var(--c-mostaza),transparent);animation:scrollPulse 2s ease infinite;}
+.hero-scroll span{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--c-oliva);font-weight:500;writing-mode:vertical-rl;}
+
+/* SHARED */
+section{position:relative;z-index:1;}
+.container{max-width:1140px;margin:0 auto;padding:0 28px;}
+.pad{padding:100px 0;}
+.section-label{display:inline-flex;align-items:center;gap:8px;font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--c-oliva);margin-bottom:14px;}
+.section-label::before{content:'';display:inline-block;width:24px;height:1.5px;background:var(--c-mostaza);}
+.section-title{font-size:clamp(2.2rem,5vw,4rem);font-weight:400;color:var(--c-marron);line-height:1.05;}
+.section-title em{font-style:italic;color:var(--c-oliva);}
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.left{transform:translateX(-32px);}
+.reveal.right{transform:translateX(32px);}
+.reveal.scale{transform:scale(.95);}
+.reveal.visible{opacity:1;transform:none;}
+.d1{transition-delay:.06s;}.d2{transition-delay:.13s;}.d3{transition-delay:.20s;}.d4{transition-delay:.27s;}
+
+/* SOBRE & PERFIL DOCENTE */
+.sobre-section{background:var(--c-crema3);}
+.sobre-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:72px;align-items:start;}
+@media(max-width:860px){.sobre-grid{grid-template-columns:1fr;gap:48px;}}
+.sobre-parrafo{font-size:1.05rem;color:var(--c-marron3);line-height:1.8;margin-bottom:16px;}
+.sobre-parrafo strong{color:var(--c-marron);font-weight:600;}
+
+/* Tarjeta Perfil Docente Mejorada */
+.perfil-docente {
+  margin-top: 40px;
+  background: linear-gradient(145deg, var(--c-crema3), var(--c-crema));
+  border: 1px solid var(--c-crema2);
+  border-radius: 20px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(35,20,9,.04);
+  transition: transform var(--tr), box-shadow var(--tr);
+}
+.perfil-docente:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--sh-md);
+}
+.perfil-docente::before {
+  content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:linear-gradient(to bottom, var(--c-oliva), var(--c-mostaza));
+}
+.pd-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(74,44,18,.06);
+}
+.pd-icon {
+  width: 58px; height: 58px; border-radius: 50%; background: rgba(94,112,72,.1); color: var(--c-oliva); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; flex-shrink: 0; box-shadow: inset 0 2px 6px rgba(94,112,72,.15);
+}
+.pd-title h4 {
+  font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: var(--c-marron); margin-bottom: 2px;
+}
+.pd-title span {
+  font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--c-mostaza);
+}
+.pd-tags {
+  display: flex; flex-wrap: wrap; gap: 10px;
+}
+.pd-tag {
+  background: #fff; border: 1px solid rgba(94,112,72,.15); padding: 8px 14px; border-radius: 50px; font-size: .82rem; font-weight: 500; color: var(--c-marron2); display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.02); transition: all var(--tr); cursor: default;
+}
+.pd-tag svg { font-size: .8rem; color: var(--c-oliva); transition: color var(--tr); }
+.pd-tag:hover {
+  background: var(--c-oliva); color: #fff; transform: translateY(-3px) scale(1.02); box-shadow: 0 6px 16px rgba(94,112,72,.25); border-color: var(--c-oliva);
+}
+.pd-tag:hover svg { color: var(--c-mostaza3); }
+
+/* BENEFICIOS */
+.beneficios-section { background: var(--c-marron); color: #fff; overflow: hidden; position: relative; }
+.beneficios-section .section-label { color: var(--c-oliva3); }
+.beneficios-section .section-label::before { background: var(--c-mostaza); }
+.beneficios-section .section-title { color: #fff; }
+.beneficios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 54px; }
+@media(max-width: 860px) { .beneficios-grid { grid-template-columns: 1fr; } }
+.bene-card {
+  background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); border-radius: 24px; padding: 36px 28px; transition: all var(--tr); position: relative; overflow: hidden;
+}
+.bene-card::before { content:''; position:absolute; inset:0; background:radial-gradient(circle at top right, rgba(255,255,255,.08), transparent 60%); opacity:0; transition:opacity var(--tr); }
+.bene-card:hover { background: rgba(255,255,255,.05); transform: translateY(-10px); border-color: rgba(255,255,255,.15); box-shadow: 0 16px 40px rgba(0,0,0,.3); }
+.bene-card:hover::before { opacity: 1; }
+.bc-icon {
+  width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin-bottom: 24px; transition: transform var(--tr);
+}
+.bene-card:hover .bc-icon { transform: scale(1.1) rotate(5deg); }
+.bc-1 { background: rgba(224,181,48,.15); color: var(--c-mostaza2); }
+.bc-2 { background: rgba(139,168,184,.15); color: var(--c-cielo); }
+.bc-3 { background: rgba(164,181,128,.15); color: var(--c-oliva3); }
+.bene-card h3 { font-size: 1.55rem; font-style: italic; font-weight: 400; margin-bottom: 14px; line-height: 1.2; position:relative; }
+.bene-card p { font-size: .95rem; color: rgba(255,255,255,.7); line-height: 1.7; position:relative; }
+
+/* TALLERES */
+.talleres-section{background:var(--c-crema);}
+.talleres-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:52px;gap:20px;flex-wrap:wrap;}
+.talleres-badge{display:flex;align-items:center;gap:8px;background:rgba(196,153,30,.12);border:1px solid rgba(196,153,30,.28);border-radius:50px;padding:10px 20px;font-size:.8rem;font-weight:600;color:var(--c-marron2);white-space:nowrap;}
+.talleres-badge svg{color:var(--c-mostaza);}
+.talleres-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;}
+@media(max-width:740px){.talleres-grid{grid-template-columns:1fr;}}
+.tc{background:var(--c-crema3);border-radius:var(--radius);border:1px solid rgba(74,44,18,.09);overflow:hidden;display:flex;flex-direction:column;transition:transform var(--tr),box-shadow var(--tr);cursor:default;}
+.tc:hover{transform:translateY(-12px);box-shadow:var(--sh-md);}
+.tc-strip{height:4px;width:100%;}
+.t-inf .tc-strip{background:linear-gradient(90deg,var(--c-oliva),var(--c-oliva3));}
+.t-ado .tc-strip{background:linear-gradient(90deg,var(--c-tierra),#c9895a);}
+.t-adu .tc-strip{background:linear-gradient(90deg,var(--c-mostaza),var(--c-mostaza3));}
+.t-ave .tc-strip{background:linear-gradient(90deg,var(--c-cielo),#aec8d8);}
+.tc-body{padding:30px 30px 0;flex:1;}
+.tc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;}
+.tc-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;transition:transform var(--tr);}
+.tc:hover .tc-icon{transform:rotate(-10deg) scale(1.15);}
+.t-inf .tc-icon{background:rgba(94,112,72,.12);color:var(--c-oliva);}
+.t-ado .tc-icon{background:rgba(156,90,48,.12);color:var(--c-tierra);}
+.t-adu .tc-icon{background:rgba(196,153,30,.12);color:var(--c-mostaza);}
+.t-ave .tc-icon{background:rgba(139,168,184,.15);color:var(--c-cielo);}
+.tc-num{font-family:'Cormorant Garamond',serif;font-size:3.5rem;font-weight:300;color:rgba(35,20,9,.04);line-height:1;user-select:none;transition:color var(--tr);}
+.tc:hover .tc-num{color:rgba(35,20,9,.08);}
+.tc-title{font-size:1.65rem;font-weight:600;margin-bottom:4px;}
+.tc-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.1rem;margin-bottom:16px;}
+.t-inf .tc-sub{color:var(--c-oliva);}
+.t-ado .tc-sub{color:var(--c-tierra);}
+.t-adu .tc-sub{color:var(--c-mostaza);}
+.t-ave .tc-sub{color:var(--c-cielo);}
+.tc-desc{font-size:.9rem;color:var(--c-marron3);line-height:1.75;margin-bottom:24px;}
+.tc-details{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
+.det{display:flex;align-items:flex-start;gap:10px;font-size:.86rem;color:var(--c-marron2);}
+.det svg{width:16px;flex-shrink:0;margin-top:2px;font-size:.85rem;}
+.t-inf .det svg{color:var(--c-oliva);}
+.t-ado .det svg{color:var(--c-tierra);}
+.t-adu .det svg{color:var(--c-mostaza);}
+.t-ave .det svg{color:var(--c-cielo);}
+.tc-foot{padding:18px 30px 24px;border-top:1px solid rgba(74,44,18,.06);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.badge-c{display:inline-flex;align-items:center;gap:6px;background:rgba(196,153,30,.1);border:1px solid rgba(196,153,30,.24);color:var(--c-marron2);border-radius:20px;padding:5px 14px;font-size:.75rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;}
+.badge-c svg{color:var(--c-mostaza);font-size:.7rem;}
+.tc-wa{display:inline-flex;align-items:center;gap:8px;background:#25d366;color:#fff;font-size:.8rem;font-weight:600;padding:9px 18px;border-radius:20px;transition:all var(--tr);}
+.tc-wa:hover{background:#1eaa55;transform:translateY(-2px);box-shadow: 0 6px 16px rgba(37,211,102,.3);}
+
+/* INICIO STRIP */
+.inicio-strip{margin-top:40px;background:var(--c-marron);border-radius:20px;padding:34px 40px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;overflow:hidden;position:relative;}
+.inicio-strip::before{content:'';position:absolute;right:-60px;top:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(196,153,30,.15),transparent 70%);pointer-events:none;}
+.inicio-strip h4{font-family:'Cormorant Garamond',serif;font-size:2rem;font-style:italic;color:#fff;font-weight:400;margin-bottom:6px;}
+.inicio-strip p{font-size:.9rem;color:rgba(255,255,255,.65);}
+.inicio-cta{display:inline-flex;align-items:center;gap:9px;background:var(--c-mostaza2);color:var(--c-marron);font-weight:700;font-size:.95rem;padding:15px 30px;border-radius:50px;transition:all var(--tr);white-space:nowrap;}
+.inicio-cta:hover{background:var(--c-mostaza3);transform:translateY(-3px);box-shadow: 0 8px 24px rgba(224,181,48,.3);}
+
+/* FRASES */
+.frases-section{background:var(--c-crema3);}
+.frases-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+@media(max-width:740px){.frases-grid{grid-template-columns:1fr;}}
+.frase-card{background:var(--c-crema);border:1px solid var(--c-crema2);border-radius:20px;padding:30px 26px;position:relative;transition:transform var(--tr),box-shadow var(--tr);}
+.frase-card:hover{transform:translateY(-8px);box-shadow:var(--sh-md);}
+.frase-card::before{content:'"';position:absolute;top:10px;right:22px;font-family:'Cormorant Garamond',serif;font-size:6rem;color:rgba(94,112,72,.06);line-height:1;pointer-events:none;}
+.frase-card p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.25rem;color:var(--c-marron);line-height:1.45;margin-bottom:20px;}
+.frase-ico{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.95rem;}
+.fi-v{background:linear-gradient(135deg, rgba(94,112,72,.15), rgba(94,112,72,.05));color:var(--c-oliva);}
+.fi-m{background:linear-gradient(135deg, rgba(196,153,30,.15), rgba(196,153,30,.05));color:var(--c-mostaza);}
+.fi-t{background:linear-gradient(135deg, rgba(156,90,48,.15), rgba(156,90,48,.05));color:var(--c-tierra);}
+
+/* SOBRE CHIPS REFINADOS */
+.sobre-card{background:var(--c-oliva);border-radius:28px;padding:42px 38px;color:#fff;position:relative;overflow:hidden; box-shadow: 0 15px 35px rgba(94,112,72,.2);}
+.sobre-card::before{content:'"';position:absolute;top:-15px;left:25px;font-family:'Cormorant Garamond',serif;font-size:180px;line-height:1;color:rgba(255,255,255,.05);pointer-events:none;}
+.sobre-card h3{font-size:1.9rem;font-style:italic;font-weight:400;margin-bottom:16px;line-height:1.25;}
+.sobre-card p{font-size:.98rem;opacity:.9;line-height:1.75;}
+.sobre-chips{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px;}
+.chip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:12px 14px;font-size:.83rem;display:flex;align-items:center;gap:10px;transition:all var(--tr); cursor:default;}
+.chip:hover{background:rgba(255,255,255,.15); transform:translateX(3px); border-color:rgba(255,255,255,.25);}
+.chip svg{color:var(--c-mostaza2);font-size:.9rem;}
+.sobre-float{position:absolute;bottom:-20px;right:-18px;background:var(--c-mostaza);border-radius:18px;padding:18px 22px;color:var(--c-marron);box-shadow:var(--sh-md);display:flex;align-items:center;gap:12px;animation:floatCard 4s ease-in-out infinite;}
+.float-icon{font-size:1.6rem;}
+.float-text strong{font-family:'Cormorant Garamond',serif;font-size:1.1rem;display:block;}
+.float-text span{font-size:.78rem;font-weight:600;opacity:.8;}
+
+/* FILOSOFIA */
+.filosofia-section{background:var(--c-marron);overflow:hidden;}
+.filosofia-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+@media(max-width:860px){.filosofia-inner{grid-template-columns:1fr;gap:48px;}}
+.filosofia-inner blockquote{font-family:'Cormorant Garamond',serif;font-size:clamp(1.75rem,3.5vw,2.8rem);font-style:italic;font-weight:300;color:#fff;line-height:1.35;position:relative;padding-left:26px;}
+.filosofia-inner blockquote::before{content:'';position:absolute;left:0;top:8px;width:3px;height:calc(100% - 16px);background:var(--c-mostaza);border-radius:2px;}
+.filosofia-inner blockquote em{font-style:normal;color:var(--c-mostaza2);}
+.fil-attrib{margin-top:26px;padding-left:26px;font-size:.8rem;color:rgba(255,255,255,.35);letter-spacing:.1em;text-transform:uppercase;}
+.fil-right .section-label{color:var(--c-oliva3);}
+.fil-right .section-label::before{background:var(--c-mostaza);}
+.fil-right h3{font-size:1.85rem;color:#fff;margin:12px 0 16px;font-weight:400;}
+.fil-right p{font-size:.93rem;line-height:1.8;color:rgba(255,255,255,.65);margin-bottom:26px;}
+.valores-list{display:flex;flex-direction:column;gap:12px;}
+.vl-item{display:flex;align-items:center;gap:13px;padding:11px 15px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);border-radius:11px;font-size:.87rem;color:rgba(255,255,255,.78);transition:background var(--tr);}
+.vl-item:hover{background:rgba(255,255,255,.1); transform:translateX(4px);}
+.vl-item svg{color:var(--c-mostaza2);width:17px;font-size:.88rem;}
+.fil-deco{position:absolute;bottom:-20px;left:-10px;font-family:'Cormorant Garamond',serif;font-size:18rem;font-weight:700;color:rgba(255,255,255,.02);line-height:1;user-select:none;pointer-events:none;white-space:nowrap;}
+
+/* CONTACTO */
+.contacto-section{background:var(--c-crema);}
+.contacto-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start;}
+@media(max-width:860px){.contacto-grid{grid-template-columns:1fr;}}
+.contacto-links{display:flex;flex-direction:column;gap:11px;margin-top:32px;}
+.c-link{display:flex;align-items:center;gap:15px;padding:15px 18px;background:var(--c-crema3);border:1px solid var(--c-crema2);border-radius:15px;transition:all var(--tr);}
+.c-link:hover{border-color:var(--c-oliva);transform:translateX(5px);box-shadow:var(--sh-sm);}
+.c-link-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;transition:transform var(--tr);}
+.c-link:hover .c-link-icon{transform:scale(1.1);}
+.cl-wa .c-link-icon{background:rgba(37,211,102,.12);color:#25d366;}
+.cl-ig .c-link-icon{background:rgba(193,53,132,.1);color:#c13584;}
+.cl-fb .c-link-icon{background:rgba(66,103,178,.1);color:#4267b2;}
+.c-link-text strong{font-size:.9rem;font-weight:600;display:block;margin-bottom:1px;}
+.c-link-text span{font-size:.77rem;color:var(--c-oliva);font-weight:500;}
+.c-arrow{margin-left:auto;color:rgba(74,44,18,.18);font-size:.74rem;transition:all var(--tr);}
+.c-link:hover .c-arrow{color:var(--c-oliva);transform:translateX(3px);}
+.contacto-right{display:flex;flex-direction:column;gap:18px;}
+.lugares-card{background:var(--c-crema3);border:1px solid var(--c-crema2);border-radius:20px;padding:26px;}
+.lugares-card h3{font-size:1.45rem;margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+.lugar-row{display:flex;gap:13px;padding:13px 0;border-bottom:1px solid var(--c-crema2);}
+.lugar-row:last-child{border-bottom:none;}
+.lugar-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.ld-o{background:var(--c-oliva);}.ld-t{background:var(--c-tierra);}.ld-c{background:var(--c-cielo);}
+.lugar-info strong{font-size:.9rem;display:block;margin-bottom:3px;}
+.lugar-info span{font-size:.78rem;color:var(--c-marron3);}
+.cta-card{background:var(--c-oliva);border-radius:20px;padding:26px;color:#fff;position:relative;overflow:hidden; box-shadow:0 8px 24px rgba(94,112,72,.25);}
+.cta-card::before{content:'';position:absolute;top:-50px;right:-50px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.06);pointer-events:none;}
+.cta-card p{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.35rem;margin-bottom:18px;line-height:1.4;opacity:.95;}
+.cta-btn{display:inline-flex;align-items:center;gap:8px;background:var(--c-mostaza2);color:var(--c-marron);font-weight:700;font-size:.9rem;padding:12px 22px;border-radius:50px;transition:all var(--tr);}
+.cta-btn:hover{background:var(--c-mostaza3);transform:translateY(-2px); box-shadow:0 4px 12px rgba(224,181,48,.3);}
+
+/* FOOTER */
+footer{background:var(--c-marron);padding:58px 28px 30px;position:relative;z-index:1;}
+.footer-inner{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:48px;margin-bottom:44px;}
+@media(max-width:740px){.footer-inner{grid-template-columns:1fr;gap:28px;}}
+.footer-brand{font-family:'Cormorant Garamond',serif;font-size:2.1rem;font-weight:300;color:#fff;line-height:1;margin-bottom:7px;}
+.footer-lema{font-style:italic;color:var(--c-mostaza2);font-size:.88rem;margin-bottom:18px;}
+.footer-redes{display:flex;gap:9px;}
+.footer-red{width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.65);font-size:1.1rem;transition:all var(--tr);}
+.footer-red:hover{border-color:var(--c-oliva);background:var(--c-oliva);color:#fff;transform:translateY(-3px);}
+.footer-col h5{font-size:.68rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.32);margin-bottom:16px;}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:9px;}
+.footer-col li a{font-size:.86rem;color:rgba(255,255,255,.55);transition:color var(--tr);}
+.footer-col li a:hover{color:var(--c-mostaza2); padding-left:4px;}
+.footer-bottom{max-width:1140px;margin:0 auto;padding-top:22px;border-top:1px solid rgba(255,255,255,.07);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+.footer-copy{font-size:.76rem;color:rgba(255,255,255,.28);}
+
+/* WA FAB MEJORADO */
+.wa-fab { position: fixed; bottom: 28px; right: 28px; z-index: 999; display: flex; align-items: center; gap: 8px; background: #25d366; color: #fff; border-radius: 50px; padding: 10px 22px 10px 14px; box-shadow: 0 6px 24px rgba(37,211,102,.4); transition: all var(--tr); animation: waIn .6s 1s ease both, pulseSoft 3s infinite; }
+.wa-fab:hover { background: #1eaa55; transform: translateY(-4px) scale(1.02); box-shadow: 0 12px 32px rgba(37,211,102,.5); }
+.wa-fab-icon { font-size: 1.5rem; display: flex; align-items: center; justify-content: center; }
+.wa-fab-label { font-size: .95rem; font-weight: 700; white-space: nowrap; }
+@media(max-width:600px){ .wa-fab { bottom: 20px; right: 20px; padding: 10px 18px 10px 12px; } }
+
+/* KEYFRAMES */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+@keyframes lineReveal{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+@keyframes blobFloat{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(20px,-20px) scale(1.05);}}
+@keyframes arcRotate{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+@keyframes scrollPulse{0%,100%{opacity:.4;transform:scaleY(.8);}50%{opacity:1;transform:scaleY(1);}}
+@keyframes floatCard{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+@keyframes waIn{from{opacity:0;transform:translateY(30px) scale(0.9);}to{opacity:1;transform:translateY(0) scale(1);}}
+@keyframes pulseSoft{0%{box-shadow: 0 0 0 0 rgba(37,211,102,.5);}70%{box-shadow: 0 0 0 15px rgba(37,211,102,0);}100%{box-shadow: 0 0 0 0 rgba(37,211,102,0);}}
+</style>
+</head>
+<body>
+<canvas id="particles-canvas"></canvas>
+
+<nav class="nav" id="navbar">
+  <a href="#" class="nav-logo">
+    <img src="1.png" alt="Logo Monte en Vuelo" class="nav-logo-img">
+    Monte en Vuelo
+  </a>
+  <div class="nav-links">
+    <a href="#sobre">El proyecto</a>
+    <a href="#beneficios">Beneficios</a>
+    <a href="#talleres">Talleres</a>
+    <a href="#contacto">Contacto</a>
+    <a href="https://forms.gle/FBjAUFEbnWNfRNmA6" target="_blank" class="nav-btn">Inscribirme</a>
+  </div>
+</nav>
+
+<section class="hero" id="inicio">
+  <div class="hero-blob blob-1"></div>
+  <div class="hero-blob blob-2"></div>
+  <div class="hero-blob blob-3"></div>
+  <div class="hero-arc arc-1"></div>
+  <div class="hero-arc arc-2"></div>
+  <div class="hero-eyebrow">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+    Proyecto Educativo · Córdoba, Argentina
+  </div>
+  <h1 class="hero-title">Monte en <em><span class="vw">Vuelo</span></em></h1>
+  <p class="hero-claim">Arte · Teatro · Naturaleza · Comunidad</p>
+  <p class="hero-lema"><span></span>Arte que enraíza, naturaleza que inspira<span></span></p>
+  <div class="hero-ctas">
+    <a href="https://forms.gle/FBjAUFEbnWNfRNmA6" target="_blank" class="btn-pri">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> 
+      Inscribime ahora
+    </a>
+    <a href="#beneficios" class="btn-sec">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="m17 5-5-3-5 3"/><path d="m17 19-5 3-5-3"/></svg>
+      Conocer más
+    </a>
+  </div>
+  <div class="hero-scroll"><span>explorar</span><div class="hero-scroll-line"></div></div>
+</section>
+
+<section class="sobre-section pad" id="sobre">
+  <div class="container">
+    <div class="sobre-grid">
+      <div class="reveal left">
+        <p class="section-label">El proyecto</p>
+        <h2 class="section-title" style="margin-top:4px;">Un espacio donde el arte <em>te encuentra</em></h2>
+        <p class="sobre-parrafo" style="margin-top:22px;">Monte en Vuelo nació de la convicción de que <strong>el arte y la naturaleza tienen el poder de transformar</strong> la manera en que nos relacionamos con el mundo y con nosotros mismos. No es solo un taller. Es un lugar donde las personas llegan, se detienen, respiran y <em>florecen</em>.</p>
+        <p class="sobre-parrafo">Cada encuentro es una invitación a mirar diferente. A escuchar el monte adentro. A descubrir que en un escenario, en la observación de un pájaro o en el juego teatral hay algo que nos devuelve lo que el ruido del día nos lleva.</p>
+        
+        <div class="perfil-docente reveal d2">
+          <div class="pd-header">
+            <div class="pd-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            </div>
+            <div class="pd-title">
+              <span>Docente Facilitadora</span>
+              <h4>Vanesa Steiner</h4>
+            </div>
+          </div>
+          <div class="pd-tags">
+            <div class="pd-tag" title="Licenciatura y Profesorado"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 10h20M12 2v20M5 5l14 14M19 5L5 19"/></svg> Lic. y Prof. en Teatro</div>
+            <div class="pd-tag" title="Formación en valores y grupos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Educadora Salesiana y Scout</div>
+            <div class="pd-tag" title="Conexión con el entorno"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 7h.01"/><path d="M3.4 18H12a8 8 0 0 0 8-8V7a4 4 0 0 0-7.28-2.3L2 20"/><path d="m20 7 2 .5-2 .5"/><path d="M10 18v3"/><path d="M14 17.75V21"/><path d="M7 18a6 6 0 0 0 3.84-10.61"/></svg> Observadora de aves</div>
+            <div class="pd-tag" title="Trabajo con la tierra"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg> Jardinería, horticultura y viverismo</div>
+            <div class="pd-tag" title="Soberanía alimentaria"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg> Diplomatura en Agroecología</div>
+          </div>
+        </div>
+
+      </div>
+      <div class="reveal right" style="transition-delay:.15s;">
+        <div style="position:relative;">
+          <div class="sobre-card">
+            <h3>"Hay un monte adentro de cada uno esperando alzar vuelo."</h3>
+            <p>Monte en Vuelo es el lugar donde eso pasa. Donde las infancias juegan siendo ellas mismas, los adolescentes encuentran su voz y los adultos recuerdan que el arte no tiene edad ni expiración.</p>
+            <div class="sobre-chips">
+              <div class="chip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg>
+                Conexión natural
+              </div>
+              <div class="chip">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10s2.5-3 5-3 5 3 5 3 2.5 7-5 7-5-7-5-7Z"/><path d="M2 10a10 10 0 0 1 10-10"/><path d="M12 10s2.5-3 5-3 5 3 5 3 2.5 7-5 7-5-7-5-7Z"/><path d="M12 10a10 10 0 0 1 10-10"/><path d="M5 6v2"/><path d="M9 6v2"/><path d="M15 6v2"/><path d="M19 6v2"/><path d="M7 13c.83 0 1.5.67 1.5 1.5S7.83 16 7 16s-1.5-.67-1.5-1.5S6.17 13 7 13Z"/><path d="M17 13c.83 0 1.5.67 1.5 1.5S17.83 16 17 16s-1.5-.67-1.5-1.5S16.17 13 17 13Z"/></svg>
+                Expresión artística
+              </div>
+            </div>
+          </div>
+          <div class="sobre-float">
+            <div class="float-icon">🌿</div>
+            <div class="float-text"><strong>Comenzamos en abril</strong><span>Cupos muy limitados</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="beneficios-section pad" id="beneficios">
+  <div class="hero-blob blob-2" style="opacity:0.3; top:-100px; right:-100px;"></div>
+  <div class="container">
+    <div style="text-align:center; max-width:700px; margin:0 auto;">
+      <p class="section-label" style="justify-content:center;">Por qué sumarte</p>
+      <h2 class="section-title">El arte no exige, <em>transforma</em></h2>
+    </div>
+    
+    <div class="beneficios-grid">
+      <div class="bene-card reveal d1">
+        <div class="bc-icon bc-1">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10s2.5-3 5-3 5 3 5 3 2.5 7-5 7-5-7-5-7Z"/><path d="M2 10a10 10 0 0 1 10-10"/><path d="M12 10s2.5-3 5-3 5 3 5 3 2.5 7-5 7-5-7-5-7Z"/><path d="M12 10a10 10 0 0 1 10-10"/><path d="M5 6v2"/><path d="M9 6v2"/><path d="M15 6v2"/><path d="M19 6v2"/><path d="M7 13c.83 0 1.5.67 1.5 1.5S7.83 16 7 16s-1.5-.67-1.5-1.5S6.17 13 7 13Z"/><path d="M17 13c.83 0 1.5.67 1.5 1.5S17.83 16 17 16s-1.5-.67-1.5-1.5S16.17 13 17 13Z"/></svg>
+        </div>
+        <h3>El mito de la timidez</h3>
+        <p>A simple vista, el teatro puede parecer un desafío si sos una persona tímida. Sin embargo, <strong>es exactamente lo contrario: es un escudo protector.</strong> Al "jugar a ser otro" dentro de un espacio seguro y sin juicios, la presión desaparece. Es la herramienta perfecta para vencer la vergüenza, ganar seguridad al hablar y descubrir una faceta mucho más extrovertida y segura para tu vida diaria.</p>
+      </div>
+
+      <div class="bene-card reveal d2">
+        <div class="bc-icon bc-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h.01"/><path d="M3.4 18H12a8 8 0 0 0 8-8V7a4 4 0 0 0-7.28-2.3L2 20"/><path d="m20 7 2 .5-2 .5"/><path d="M10 18v3"/><path d="M14 17.75V21"/><path d="M7 18a6 6 0 0 0 3.84-10.61"/></svg>
+        </div>
+        <h3>Mindfulness natural</h3>
+        <p>Vivimos en una época de pantallas y urgencias. La observación de aves no es solo un pasatiempo, <strong>es un antídoto natural contra la ansiedad.</strong> Nos obliga a estar presentes en el "aquí y ahora", a silenciar la mente y a enfocar la atención. Es una práctica que entrena la paciencia, mejora la concentración y nos enseña a caminar con suavidad valorando la vida que nos rodea.</p>
+      </div>
+
+      <div class="bene-card reveal d3">
+        <div class="bc-icon bc-3">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg>
+        </div>
+        <h3>Cuerpo en libertad</h3>
+        <p>La rutina endurece el cuerpo y estresa la mente. A través del juego teatral y la expresión corporal, recuperamos la agilidad física y emocional. Volvemos a conectar con nosotros mismos no desde la exigencia, sino <strong>desde el disfrute y el juego.</strong> Se fomenta la empatía, se liberan las tensiones acumuladas y nos regalamos un espacio de pura vitalidad y descarga.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="talleres-section pad" id="talleres">
+  <div class="container">
+    <div class="talleres-header reveal">
+      <div>
+        <p class="section-label">Talleres 2025</p>
+        <h2 class="section-title">Cada taller, <em>un universo</em></h2>
+      </div>
+      <div class="talleres-badge reveal d3">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg> 
+        Comenzamos en abril · Cupos limitados
+      </div>
+    </div>
+    <div class="talleres-grid">
+
+      <div class="tc t-inf reveal d1">
+        <div class="tc-strip"></div>
+        <div class="tc-body">
+          <div class="tc-top">
+            <div class="tc-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M12 7v6"/><path d="M8 11.5 12 7l4 4.5"/><path d="M10 21v-8"/><path d="M14 21v-8"/></svg>
+            </div>
+            <span class="tc-num">01</span>
+          </div>
+          <h3 class="tc-title">Teatro para Infancias</h3>
+          <p class="tc-sub">Mirar el mundo con otros ojos</p>
+          <p class="tc-desc">Hay una magia especial cuando una niña o un niño sube a un escenario por primera vez. El cuerpo se abre, la voz aparece, la timidez se convierte en personaje. Aquí las infancias juegan siendo ellas mismas — y eso lo cambia todo.</p>
+          <div class="tc-details">
+            <div class="det">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+              <span><strong>Martes</strong> · SUM Mi Valle Golf</span>
+            </div>
+            <div class="det">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>18:00 a 19:30 hs</span>
+            </div>
+            <div class="det">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+              <span><strong>Miércoles</strong> · Villa Parque Santa Ana</span>
+            </div>
+          </div>
+        </div>
+        <div class="tc-foot">
+          <span class="badge-c">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+            Cupos limitados
+          </span>
+          <a href="https://wa.me/543571419424?text=Hola!%20Me%20interesa%20el%20taller%20de%20Teatro%20para%20Infancias%20%F0%9F%8C%BF" target="_blank" class="tc-wa">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            Consultar
+          </a>
+        </div>
+      </div>
+
+      <div class="tc t-ado reveal d2">
+        <div class="tc-strip"></div>
+        <div class="tc-body">
+          <div class="tc-top">
+            <div class="tc-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <span class="tc-num">02</span>
+          </div>
+          <h3 class="tc-title">Teatro para Adolescentes</h3>
+          <p class="tc-sub">Adolescentes en escena: transformando realidades</p>
+          <p class="tc-desc">La adolescencia necesita un escenario. Un lugar donde equivocarse sin miedo, donde el cuerpo que cambia pueda decir algo. El teatro se vuelve espejo, brújula y territorio propio para quienes están buscando quiénes son.</p>
+          <div class="tc-details">
+            <div class="det">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+              <span><strong>Viernes</strong></span>
+            </div>
+            <div class="det">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>20:00 a 21:30 hs</span>
+            </div>
+            <div class="det">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span>SUM Mi Valle Golf</span>
+            </div>
+          </div>
+        </div>
+        <div class="tc-foot">
+          <span class="badge-c">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+            Cupos limitados
+          </span>
+          <a href="https://wa.me/543571419424?text=Hola!%20Me%20interesa%20el%20taller%20de%20Teatro%20para%20Adolescentes%20%F0%9F%8C%BF" target="_blank" class="tc-wa">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            Consultar
+          </a>
+        </div>
+      </div>
+
+      <div class="tc t-adu reveal d3">
+        <div class="tc-strip"></div>
+        <div class="tc-body">
+          <div class="tc-top">
+            <div class="tc-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10s2.5-3 5-3 5 3 5 3 2.5 7-5 7-5-7-5-7Z"/><path d="M2 10a10 10 0 0 1 10-10"/><path d="M12 10s2.5-3 5-3 5 3 5 3 2.5 7-5 7-5-7-5-7Z"/><path d="M12 10a10 10 0 0 1 10-10"/><path d="M5 6v2"/><path d="M9 6v2"/><path d="M15 6v2"/><path d="M19 6v2"/><path d="M7 13c.83 0 1.5.67 1.5 1.5S7.83 16 7 16s-1.5-.67-1.5-1.5S6.17 13 7 13Z"/><path d="M17 13c.83 0 1.5.67 1.5 1.5S17.83 16 17 16s-1.5-.67-1.5-1.5S16.17 13 17 13Z"/></svg>
+            </div>
+            <span class="tc-num">03</span>
+          </div>
+          <h3 class="tc-title">Teatro Jóvenes y Adultos</h3>
+          <p class="tc-sub">Metamorfosis escénica</p>
+          <p class="tc-desc">Porque el arte no tiene fecha de vencimiento. Este espacio es para quienes siempre quisieron animarse, para quienes se alejaron y quieren volver, y para quienes simplemente sienten que hay algo adentro que todavía no encontró cómo salir.</p>
+          <div class="tc-details">
+            <div class="det">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+              <span><strong>Lunes</strong></span>
+            </div>
+            <div class="det">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>20:00 a 21:30 hs</span>
+            </div>
+            <div class="det">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span>SUM Mi Valle Golf</span>
+            </div>
+          </div>
+        </div>
+        <div class="tc-foot">
+          <span class="badge-c">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+            Cupos limitados
+          </span>
+          <a href="https://wa.me/543571419424?text=Hola!%20Me%20interesa%20el%20taller%20de%20Jóvenes%20y%20Adultos%20%F0%9F%8C%BF" target="_blank" class="tc-wa">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            Consultar
+          </a>
+        </div>
+      </div>
+
+      <div class="tc t-ave reveal d4">
+        <div class="tc-strip"></div>
+        <div class="tc-body">
+          <div class="tc-top">
+            <div class="tc-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h.01"/><path d="M3.4 18H12a8 8 0 0 0 8-8V7a4 4 0 0 0-7.28-2.3L2 20"/><path d="m20 7 2 .5-2 .5"/><path d="M10 18v3"/><path d="M14 17.75V21"/><path d="M7 18a6 6 0 0 0 3.84-10.61"/></svg>
+            </div>
+            <span class="tc-num">04</span>
+          </div>
+          <h3 class="tc-title">Observación de Aves</h3>
+          <p class="tc-sub">Pequeños pajareros</p>
+          <p class="tc-desc">Detenerse. Escuchar. Mirar hacia arriba. Un pájaro que pasa puede enseñarle a un niño o a una niña más de lo que imagina. La observación de aves es silencio activo, asombro genuino y naturaleza que habla si uno aprende a escucharla.</p>
+          <div class="tc-details">
+            <div class="det">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+              <span><strong>Viernes y Sábados</strong> (alternando)</span>
+            </div>
+            <div class="det">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>Consultar horario por privado</span>
+            </div>
+            <div class="det">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span>SUM Mi Valle Golf y espacios naturales</span>
+            </div>
+          </div>
+        </div>
+        <div class="tc-foot">
+          <span class="badge-c">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+            Cupos limitados
+          </span>
+          <a href="https://wa.me/543571419424?text=Hola!%20Me%20interesa%20el%20taller%20de%20Observación%20de%20Aves%20%F0%9F%90%A6" target="_blank" class="tc-wa">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            Consultar
+          </a>
+        </div>
+      </div>
+
+    </div>
+    <div class="inicio-strip reveal">
+      <div><h4>🌱 Comenzamos en abril</h4><p>Los cupos son pocos y se llenan rápido. Si algo te llamó, escribinos.</p></div>
+      <a href="https://forms.gle/FBjAUFEbnWNfRNmA6" target="_blank" class="inicio-cta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Reservar mi lugar
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="frases-section pad" style="padding-top:40px;">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:46px;">
+      <p class="section-label" style="justify-content:center;">Lo que sembramos</p>
+      <h2 class="section-title">Tres semillas <em>que crecen</em></h2>
+    </div>
+    <div class="frases-grid">
+      <div class="frase-card reveal d1"><p>"El arte no embellece la vida. La hace posible."</p>
+        <div class="frase-ico fi-v">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg>
+        </div>
+      </div>
+      <div class="frase-card reveal d2"><p>"La naturaleza no enseña conceptos. Enseña con el cuerpo entero."</p>
+        <div class="frase-ico fi-m">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 7h.01"/><path d="M3.4 18H12a8 8 0 0 0 8-8V7a4 4 0 0 0-7.28-2.3L2 20"/><path d="m20 7 2 .5-2 .5"/><path d="M10 18v3"/><path d="M14 17.75V21"/><path d="M7 18a6 6 0 0 0 3.84-10.61"/></svg>
+        </div>
+      </div>
+      <div class="frase-card reveal d3"><p>"Cuando un niño sube a un escenario, algo en el mundo se reacomoda."</p>
+        <div class="frase-ico fi-t">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10s2.5-3 5-3 5 3 5 3 2.5 7-5 7-5-7-5-7Z"/><path d="M2 10a10 10 0 0 1 10-10"/><path d="M12 10s2.5-3 5-3 5 3 5 3 2.5 7-5 7-5-7-5-7Z"/><path d="M12 10a10 10 0 0 1 10-10"/><path d="M5 6v2"/><path d="M9 6v2"/><path d="M15 6v2"/><path d="M19 6v2"/><path d="M7 13c.83 0 1.5.67 1.5 1.5S7.83 16 7 16s-1.5-.67-1.5-1.5S6.17 13 7 13Z"/><path d="M17 13c.83 0 1.5.67 1.5 1.5S17.83 16 17 16s-1.5-.67-1.5-1.5S16.17 13 17 13Z"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="filosofia-section pad" id="filosofia" style="position:relative;overflow:hidden;">
+  <div class="fil-deco">MeV</div>
+  <div class="container">
+    <div class="filosofia-inner">
+      <div class="reveal left">
+        <blockquote>El monte no es solo el paisaje. Es el <em>lenguaje</em>. Y nosotros aprendemos a hablarlo juntos, en escena, entre aves, entre raíces y vuelos.</blockquote>
+        <p class="fil-attrib">— Monte en Vuelo · Proyecto Educativo</p>
+      </div>
+      <div class="fil-right reveal right" style="transition-delay:.15s;">
+        <p class="section-label">Nuestra filosofía</p>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:1.9rem;color:#fff;margin:12px 0 16px;font-weight:400;">Arte que <em style="color:var(--c-mostaza2);font-style:normal;">enraíza</em></h3>
+        <p>Creemos que el arte y la naturaleza no son actividades extra. Son formas de estar en el mundo. Monte en Vuelo es el espacio donde eso se vuelve cotidiano, accesible, real.</p>
+        <div class="valores-list">
+          <div class="vl-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg>
+            El cuerpo como instrumento y territorio
+          </div>
+          <div class="vl-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8.5a6.5 6.5 0 1 1 13 0c0 6-6 6-6 10a3.5 3.5 0 1 1-7 0"/><path d="M15 8.5a2.5 2.5 0 0 0-5 0v1a2 2 0 1 1 0 4"/></svg>
+            La escucha como primera técnica teatral
+          </div>
+          <div class="vl-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18v-5l-4-4V4"/><path d="M8 9.5 12 14l4-4.5"/><path d="M18 10a6 6 0 0 0-12 0 5 5 0 0 0-1 9.9 5.5 5.5 0 0 0 13 .1 5 5 0 0 0-1-10Z"/></svg>
+            La naturaleza como co-facilitadora
+          </div>
+          <div class="vl-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            La comunidad como sostén creativo
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contacto-section pad" id="contacto">
+  <div class="container">
+    <div class="contacto-grid">
+      <div class="reveal left">
+        <p class="section-label">Hablemos</p>
+        <h2 class="section-title">¿Algo<br>te <em>resonó</em>?</h2>
+        <p style="margin-top:16px;font-size:1rem;color:var(--c-marron3);line-height:1.8;">No hace falta tener experiencia previa, ni saber si "esto es para vos". Si algo de lo que leíste te movió por dentro, ese ya es un buen motivo para escribirnos.</p>
+        <div class="contacto-links">
+          <a href="https://wa.me/543571419424?text=Hola!%20Me%20interesa%20conocer%20m%C3%A1s%20sobre%20los%20talleres%20de%20Monte%20en%20Vuelo%20%F0%9F%8C%BF" target="_blank" class="c-link cl-wa">
+            <div class="c-link-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            </div>
+            <div class="c-link-text"><strong>WhatsApp</strong><span>3571 419424 · Informes e inscripción</span></div>
+            <svg class="c-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+          <a href="https://www.instagram.com/monteenvuelo.escuela?igsh=N2VreTdpZHhwZGYx" target="_blank" class="c-link cl-ig">
+            <div class="c-link-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+            </div>
+            <div class="c-link-text"><strong>Instagram</strong><span>@monteenvuelo.escuela</span></div>
+            <svg class="c-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+          <a href="https://www.facebook.com/profile.php?id=61574877934835" target="_blank" class="c-link cl-fb">
+            <div class="c-link-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </div>
+            <div class="c-link-text"><strong>Facebook</strong><span>Monte en Vuelo · Proyecto Educativo</span></div>
+            <svg class="c-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+      <div class="contacto-right reveal right" style="transition-delay:.15s;">
+        <div class="lugares-card">
+          <h3>📍 Nuestros espacios</h3>
+          <div class="lugar-row"><div class="lugar-dot ld-o"></div><div class="lugar-info"><strong>SUM Mi Valle Golf</strong><span>Lunes, Martes y Viernes · Sede principal</span></div></div>
+          <div class="lugar-row"><div class="lugar-dot ld-t"></div><div class="lugar-info"><strong>Villa Parque Santa Ana</strong><span>Miércoles · Teatro para infancias</span></div></div>
+          <div class="lugar-row"><div class="lugar-dot ld-c"></div><div class="lugar-info"><strong>Espacios naturales abiertos</strong><span>Viernes y sábados · Observación de aves</span></div></div>
+          
+          <div style="margin-top: 24px; border-radius: 12px; overflow: hidden; height: 220px; border: 1px solid var(--c-crema2);">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3399.0855787636715!2d-64.3539444!3d-31.576701000000003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x942d59301235d42f%3A0x69692c9e6ea3088a!2sSUM%20MI%20VALLE!5e0!3m2!1ses!2sar!4v1774436990684!5m2!1ses!2sar" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+          
+        </div>
+        <div class="cta-card">
+          <p>"El mejor momento para empezar siempre es ahora. No después."</p>
+          <a href="https://wa.me/543571419424?text=Hola!%20Me%20interesa%20conocer%20m%C3%A1s%20sobre%20los%20talleres%20de%20Monte%20en%20Vuelo%20%F0%9F%8C%BF" target="_blank" class="cta-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            Escribinos ahora
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">Monte en Vuelo</div>
+      <p class="footer-lema">"Arte que enraíza, naturaleza que inspira"</p>
+      <div class="footer-redes">
+        <a href="https://wa.me/543571419424" target="_blank" class="footer-red">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        </a>
+        <a href="https://www.instagram.com/monteenvuelo.escuela?igsh=N2VreTdpZHhwZGYx" target="_blank" class="footer-red">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=61574877934835" target="_blank" class="footer-red">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h5>Navegación</h5>
+      <ul>
+        <li><a href="#sobre">El proyecto</a></li>
+        <li><a href="#beneficios">Por qué sumarte</a></li>
+        <li><a href="#talleres">Nuestros talleres</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Talleres</h5>
+      <ul>
+        <li><a href="#talleres">Teatro para Infancias</a></li>
+        <li><a href="#talleres">Teatro para Adolescentes</a></li>
+        <li><a href="#talleres">Teatro Jóvenes y Adultos</a></li>
+        <li><a href="#talleres">Observación de Aves</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2025 Monte en Vuelo · Proyecto Educativo · Córdoba, Argentina · Prof. Vanesa Steiner</p>
+    <p class="footer-copy">Hecho con 🌿 y mucho amor</p>
+  </div>
+</footer>
+
+<a href="https://wa.me/543571419424?text=Hola!%20Me%20interesa%20conocer%20m%C3%A1s%20sobre%20los%20talleres%20de%20Monte%20en%20Vuelo%20%F0%9F%8C%BF" target="_blank" class="wa-fab" aria-label="WhatsApp">
+  <div class="wa-fab-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+  </div>
+  <span class="wa-fab-label">Consultanos</span>
+</a>
+
+<script>
+// Navbar
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 60), { passive:true });
+
+// Scroll reveal
+const reveals = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+}, { threshold:0.1 });
+reveals.forEach(el => io.observe(el));
+
+// Smooth anchor scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if(t){ e.preventDefault(); t.scrollIntoView({ behavior:'smooth' }); }
+  });
+});
+
+// Leaf / organic particles
+(function(){
+  const canvas = document.getElementById('particles-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+  const COLORS = ['rgba(94,112,72,','rgba(196,153,30,','rgba(156,90,48,','rgba(74,44,18,'];
+
+  function resize(){ W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+
+  function Particle(){
+    this.reset = function(){
+      this.x = Math.random() * W; this.y = -20 - Math.random() * 100;
+      this.size = 2.5 + Math.random() * 5;
+      this.vx = (Math.random()-.5)*.6; this.vy = .35 + Math.random()*.65;
+      this.rot = Math.random() * Math.PI * 2; this.vrot = (Math.random()-.5)*.03;
+      this.color = COLORS[Math.floor(Math.random()*COLORS.length)];
+      this.alpha = .2 + Math.random()*.3;
+      this.type = Math.random() < .55 ? 'leaf' : 'circle';
+    };
+    this.reset(); this.y = Math.random() * H;
+  }
+
+  function drawLeaf(ctx, s){
+    ctx.beginPath();
+    ctx.moveTo(0,-s);
+    ctx.bezierCurveTo(s*.7,-s*.6,s*.7,s*.4,0,s);
+    ctx.bezierCurveTo(-s*.7,s*.4,-s*.7,-s*.6,0,-s);
+    ctx.fill();
+  }
+
+  function init(){ particles = Array.from({length:40}, () => new Particle()); }
+
+  function animate(){
+    ctx.clearRect(0,0,W,H);
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.rot += p.vrot;
+      if(p.y > H+30) p.reset();
+      ctx.save();
+      ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+      ctx.fillStyle = p.color + p.alpha + ')';
+      if(p.type === 'leaf'){ drawLeaf(ctx, p.size); }
+      else { ctx.beginPath(); ctx.ellipse(0,0,p.size*.45,p.size,0,0,Math.PI*2); ctx.fill(); }
+      ctx.restore();
+    });
+    requestAnimationFrame(animate);
+  }
+
+  resize(); init(); animate();
+  window.addEventListener('resize', resize);
+})();
+</script>
+</body>
+</html>
